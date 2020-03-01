@@ -306,6 +306,8 @@ addon_data.player.OnCombatLogUnfiltered = function(combat_info)
             offhand_miss_count = offhand_miss_count + 1
             local offhand_miss_ratio = offhand_miss_count/(offhand_hit_count + offhand_miss_count)
             print("offhand miss count: "..offhand_miss_count.." ("..(offhand_miss_ratio*100).."%)")
+        else
+            offhand_hit_count = offhand_hit_count + 1
         end
         local miss_type, is_offhand = select(12, unpack(combat_info))
         addon_data.core.MissHandler("player", miss_type, is_offhand)
