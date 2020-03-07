@@ -178,7 +178,7 @@ end
 -- end
 
 addon_data.player.HandleParry = function()
-    print("--- PLAYER PARRIED ---")
+    -- print("--- PLAYER PARRIED ---")
     wep = addon_data.player.mainhand
     if wep.cooldown < 0.2 then
         return
@@ -274,25 +274,9 @@ addon_data.player.OnCombatLogUnfiltered = function(combat_info)
     else
         active_wep = addon_data.player.mainhand
     end
-
-	--local mh_speed, oh_speed = UnitAttackSpeed("player")
-    --print("MH speed = " .. mh_speed)
-    --print("OH speed = " .. (oh_speed or "nil"))
-
-    local s = tostring(is_offhand)
-    -- if (event == "SWING_MISSED" or event == "SWING_DAMAGE") then
-    --     print(tostring(is_offhand) .. " - " .. tostring(event))
-    -- end
-
+    
     if (event == "SPELL_CAST_SUCCESS" and (spell_name == "Heroic Strike" or spell_name == "Cleave")) then
-        local delay = addon_data.player.mainhand.cooldown
-        local delay_in_seconds = delay * addon_data.player.GetWeaponSpeed(addon_data.player.mainhand)
-        -- table.insert(hs_timestamps, now)
-        -- print("HS delay was " .. delay_in_seconds * 1000 .. "ms")
-        if (math.abs(delay_in_seconds) > 0.35) then
-            delay = 0.05
-        end
-        addon_data.player.mainhand.cooldown = 1 + delay
+        addon_data.player.ResetSwingTimer(addon_data.player.mainhand)
     elseif (event == "SWING_DAMAGE") then
         addon_data.player.ResetSwingTimer(active_wep)
         if is_offhand == true then
