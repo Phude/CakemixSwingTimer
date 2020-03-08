@@ -163,20 +163,6 @@ addon_data.player.OnInventoryChange = function()
     addon_data.player.off_weapon_id = new_off_guid
 end
 
--- addon_data.player.Bruhhh = function(haste, next_swing, applied_at)
--- 	local r = (next_swing - applied_at) / haste
--- 	print("next attack comes closer by " .. r .. " seconds")
--- 	return next_swing - r
--- end
-
---addon_data.player.hs_timestamps = {}
-
--- addon_data.player.FindPhase = function()
---     for a in hs_timestamps do
---         print("TODO:")
---     end
--- end
-
 addon_data.player.HandleParry = function()
     -- print("--- PLAYER PARRIED ---")
     wep = addon_data.player.mainhand
@@ -289,7 +275,7 @@ addon_data.player.OnCombatLogUnfiltered = function(combat_info)
         if (is_offhand and miss_type == "MISS") then
             offhand_miss_count = offhand_miss_count + 1
             local offhand_miss_ratio = offhand_miss_count/(offhand_hit_count + offhand_miss_count)
-            print("offhand miss count: "..offhand_miss_count.." ("..(offhand_miss_ratio*100).."%)")
+            -- print("offhand miss count: "..offhand_miss_count.." ("..(offhand_miss_ratio*100).."%)")
         else
             offhand_hit_count = offhand_hit_count + 1
         end
@@ -298,10 +284,8 @@ addon_data.player.OnCombatLogUnfiltered = function(combat_info)
     elseif (event == "SPELL_DAMAGE" and addon_data.core.SpellResetsSwing("player", spell_id)) then
         addon_data.player.ResetSwingTimer(addon_data.player.mainhand)
         addon_data.player.ResetSwingTimer(addon_data.player.offhand)
-        -- addon_data.player.next_swing_mh = timestamp	+ mh_speed
-        addon_data.player.previous_swing_mh = timestamp
 
---        addon_data.core.SpellHandler("player", spell_id)
+--      addon_data.core.SpellHandler("player", spell_id)
     end
 end
 
