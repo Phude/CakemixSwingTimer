@@ -678,6 +678,11 @@ local function OnAddonLoaded(self)
     addon_data.core.core_frame:RegisterEvent("UNIT_SPELLCAST_FAILED")
     addon_data.core.core_frame:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
     addon_data.core.core_frame:RegisterEvent("UNIT_SPELLCAST_FAILED_QUIET")
+
+    addon_data.core.core_frame:RegisterEvent("ACTIONBAR_UPDATE_STATE")
+    addon_data.core.core_frame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
+    addon_data.core.core_frame:RegisterEvent("ACTIONBAR_PAGE_CHANGED")
+
     -- Load the settings for the core and all timers
     LoadAllSettings()
     InitializeAllVisuals()
@@ -725,6 +730,9 @@ local function CoreFrame_OnEvent(self, event, ...)
     elseif event == "UNIT_SPELLCAST_FAILED_QUIET" then
         addon_data.hunter.OnUnitSpellCastFailedQuiet(args[1], args[3])
     end
+    -- elseif event == "ACTIONBAR_UPDATE_STATE" or event == "ACTIONBAR_SLOT_CHANGED" or event == "ACTIONBAR_PAGE_CHANGED" then
+    --     addon_data.player.AttackModifierIsQueued()
+    -- end
 end
 
 -- Add a slash command to bring up the config window

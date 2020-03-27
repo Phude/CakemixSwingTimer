@@ -25,6 +25,7 @@ addon_data.player.default_settings = {
     classic_bars = true,
     fill_empty = true,
     main_r = 0.1, main_g = 0.1, main_b = 0.9, main_a = 1.0,
+    queued_r = 0.9, queued_g = 0.9, queued_b = 0.1, queued_a = 1.0,
     main_text_r = 1.0, main_text_g = 1.0, main_text_b = 1.0, main_text_a = 1.0,
     off_r = 0.1, off_g = 0.1, off_b = 0.9, off_a = 1.0,
     off_text_r = 1.0, off_text_g = 1.0, off_text_b = 1.0, off_text_a = 1.0,
@@ -38,6 +39,7 @@ addon_data.player.prev_main_weapon_speed = 2
 addon_data.player.main_weapon_speed = 2
 addon_data.player.main_weapon_id = GetInventoryItemID("player", 16)
 addon_data.player.main_speed_changed = false
+addon_data.player.slot_list = nil
 
 addon_data.player.mainhand = {
 	weapon_id = GetInventoryItemID("player", 16),
@@ -99,6 +101,34 @@ end
 ====================================== LOGIC RELATED =======================================
 ============================================================================================
 ]]--
+
+addon_data.player.SpellIsQueued = function(spell_name)
+    local _, _, _, _, _, _, spell_id = GetSpellInfo(spell_name)
+    if spell_id then
+        local slot = C_ActionBar.FindSpellActionButtons(spell_id)
+        if slot then
+            return IsCurrentAction(slot[1])
+        end
+    end
+end
+
+-- addon_data.player.AttackModifierIsQueued = function()
+--     local _, _, _, _, _, _, heroicstrike_id = GetSpellInfo("Heroic Strike")
+--     local _, _, _, _, _, _, cleave_id = GetSpellInfo("Cleave")
+
+--     if heroicstrike_id then
+--         local heroicstrike_slot = C_ActionBar.FindSpellActionButtons(heroicstrike_id)
+--         if heroicstrike_slot then
+--             return IsCurrentAction(heroicstrike_slot[1])
+--         end
+--     end
+--     if cleave_id then
+--         local cleave_slot = C_ActionBar.FindSpellActionButtons(cleave_id)
+--         if cleave_slot then
+--             return IsCurrentAction(cleave_slot[1])
+--         end
+--     end
+-- end
 
 addon_data.player.OnUpdate = function(elapsed)
     if character_player_settings.enabled then
@@ -359,8 +389,15 @@ addon_data.player.UpdateVisualsOnUpdate = function()
         -- Update the main bars text
         frame.main_left_text:SetText("")
         frame.main_right_text:SetText(tostring(addon_data.utils.SimpleRound(main_timer, 0.1)))
-        -- Update the off hand bar
 
+        -- Update the main bars color
+        if addon_data.player.SpellIsQueued("Heroic Strike") or addon_data.player.SpellIsQueued("Cleave") then
+            frame.main_bar:SetVertexColor(settings.queued_r, settings.queued_g, settings.queued_b, settings.queued_a)
+        else
+            frame.main_bar:SetVertexColor(settings.main_r, settings.main_g, settings.main_b, settings.main_a)
+        end
+
+        -- Update the off hand bar
         if addon_data.player.offhand.speed ~= nil then
             -- OFFHAND MARKER ON MAINHAND BAR
             local time_until_mainhand = addon_data.player.TimeUntilAttack(addon_data.player.mainhand)
@@ -388,7 +425,7 @@ addon_data.player.UpdateVisualsOnUpdate = function()
             -- mark_pos1 = mark_pos2
             -- print(mark_pos)
             -- mark_pos = 0
-            frame.offhand_spark:SetPoint('TOPLEFT', mark_pos - 14, 0)
+            frame.offhand_spark:SetPoint('TOPLEFT', mark_pos - 4, 3)
 
             if settings.show_offhand then
                 frame.off_bar:Show()
@@ -405,13 +442,13 @@ addon_data.player.UpdateVisualsOnUpdate = function()
                 local off_speed = addon_data.player.off_weapon_speed
                 local off_timer = addon_data.player.off_swing_timer
 
-                -- quick and ditry offhand HS timer
-                local margin_of_error = 0.133
-                if off_timer + margin_of_error < main_timer then
-                	frame.main_bar:SetVertexColor(1, 1, 0, settings.main_a);
-                else
-                	frame.main_bar:SetVertexColor(settings.main_r, settings.main_g, settings.main_b, settings.main_a)
-                end
+                -- -- quick and ditry offhand HS timer
+                -- local margin_of_error = 0.133
+                -- if off_timer + margin_of_error < main_timer then
+                -- 	frame.main_bar:SetVertexColor(settings.main_r settings.main_a);
+                -- else
+                -- 	frame.main_bar:SetVertexColor(settings.main_r, settings.main_g, settings.main_b, settings.main_a)
+                -- end
 
                 -- FIXME: Handle divide by 0 error
                 if off_speed == 0 then
@@ -482,7 +519,7 @@ addon_data.player.UpdateVisualsOnSettingsChange = function()
         else
             frame.main_bar:SetTexture('Interface/AddOns/WeaponSwingTimer/Images/Background')
         end
-        frame.offhand_spark:SetSize(24, settings.height)
+        frame.offhand_spark:SetSize(5, settings.height+6)
 
         frame.main_bar:SetVertexColor(settings.main_r, settings.main_g, settings.main_b, settings.main_a)
         frame.main_spark:SetSize(16, settings.height)
@@ -584,7 +621,8 @@ addon_data.player.InitializeVisuals = function()
     frame.main_spark:SetTexture('Interface/AddOns/WeaponSwingTimer/Images/Spark')
     -- Create the offhand spark!!
     frame.offhand_spark = frame:CreateTexture(nil, "OVERLAY")
-    frame.offhand_spark:SetTexture('Interface/AddOns/WeaponSwingTimer/Images/Spark')
+    frame.offhand_spark:SetTexture('Interface/AddOns/WeaponSwingTimer/Images/Bar')
+    frame.offhand_spark:SetVertexColor(1, 0, 1, 1)
     -- Create the main hand bar left text
     frame.main_left_text = frame:CreateFontString(nil, "OVERLAY")
     frame.main_left_text:SetFont("Fonts/FRIZQT__.ttf", 10)
