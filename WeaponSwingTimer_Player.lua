@@ -25,7 +25,7 @@ addon_data.player.default_settings = {
     classic_bars = true,
     fill_empty = true,
     main_r = 0.1, main_g = 0.1, main_b = 0.9, main_a = 1.0,
-    queued_r = 0.9, queued_g = 0.9, queued_b = 0.1, queued_a = 1.0,
+    queued_r = 0.1, queued_g = 0.9, queued_b = 0.1, queued_a = 1.0,
     main_text_r = 1.0, main_text_g = 1.0, main_text_b = 1.0, main_text_a = 1.0,
     off_r = 0.1, off_g = 0.1, off_b = 0.9, off_a = 1.0,
     off_text_r = 1.0, off_text_g = 1.0, off_text_b = 1.0, off_text_a = 1.0,
@@ -425,7 +425,7 @@ addon_data.player.UpdateVisualsOnUpdate = function()
             -- mark_pos1 = mark_pos2
             -- print(mark_pos)
             -- mark_pos = 0
-            frame.offhand_spark:SetPoint('TOPLEFT', mark_pos - 4, 3)
+            frame.offhand_spark:SetPoint('TOPLEFT', mark_pos - 3, 2)
 
             if settings.show_offhand then
                 frame.off_bar:Show()
@@ -519,7 +519,7 @@ addon_data.player.UpdateVisualsOnSettingsChange = function()
         else
             frame.main_bar:SetTexture('Interface/AddOns/WeaponSwingTimer/Images/Background')
         end
-        frame.offhand_spark:SetSize(5, settings.height+6)
+        frame.offhand_spark:SetSize(5, settings.height+4)
 
         frame.main_bar:SetVertexColor(settings.main_r, settings.main_g, settings.main_b, settings.main_a)
         frame.main_spark:SetSize(16, settings.height)
